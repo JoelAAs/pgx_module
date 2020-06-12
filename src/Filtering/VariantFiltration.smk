@@ -4,9 +4,9 @@ rule VariantFiltration:
         DP = 100,
         read_ratio = 0.2
     input:
-        vcf = "Results/Pharmacogenomics/Haplotypecaller/{sample}_{seqID}.vcf"
+        vcf = "Results/Haplotypecaller/{sample}_{seqID}.vcf"
     output:
-        filtered_vcf = "Results/Pharmacogenomics/Haplotypecaller/filtered/{sample}_{seqID}.vcf"
+        filtered_vcf = "Results/Haplotypecaller/filtered/{sample}_{seqID}.vcf"
     singularity:
         config["singularities"]["get_target"]
     shell:

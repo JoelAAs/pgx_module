@@ -1,6 +1,3 @@
-#
-# This code used to do aggregations of multiple samples, not anymore.
-# That why the code is so empty
 import pandas as pd
 import gzip
 import re
@@ -54,8 +51,10 @@ class GDF:
 
 
 class VCF:
+    """
+     We are assuming single sample VCF
+     """
     def __init__(self, filename):
-        """ We are assuming single sample VCF"""
         self.meta = []
         self.data = pd.DataFrame()
         self.original_header = []

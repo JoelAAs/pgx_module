@@ -13,6 +13,6 @@ include:    "src/Filtering/SubsetReadsTarget.smk"
 rule All:
     input:
          expand(
-             "Results/Pharmacogenomics/Report/{sample}_{seqID}_pgx.html",
+             "Results/Report/{sample}_{seqID}_pgx.html",
                 sample=config["samples"],
                 seqID=config["seqID"]["sequencerun"])

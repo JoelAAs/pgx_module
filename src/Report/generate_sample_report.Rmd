@@ -1,5 +1,9 @@
 ```{r input, include=FALSE, echo=FALSE}
+# Generate Markdown repport over clinically relevant variants and possible haplotype
+#  with clinical guidelines.
+
 ## AUTHOR: Joel Ås
+## MAIL: joel.as@medsci.uu.se
 library(rmdformats)
 library(tidyverse)
 library(knitr)
@@ -28,7 +32,6 @@ get_haplotypes <- function(ID, haplotype_definitions=haplotype_definitions){
 
 ---
 title: "`r argsL$title`"
-author: "`r argsL$author`"
 date: "Date compiled: `r format(Sys.time(), '%d %B, %Y, %H:%M')`"
 output_format:
     html_document:

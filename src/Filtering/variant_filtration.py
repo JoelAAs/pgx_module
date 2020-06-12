@@ -4,6 +4,9 @@ import sys
 
 
 def filter_variants(vcf, read_ratio, depth, output):
+    """
+    Soft filter all variants with suspicious read ratio and insufficient read-depth
+    """
     vcf_in = VariantFile(vcf)
     new_header = vcf_in.header
     new_header.filters.add(f"AR{read_ratio}", None, None,

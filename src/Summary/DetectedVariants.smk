@@ -1,12 +1,13 @@
 
 rule DetectedVariants:
+    """ Get variants with target rsIDs """
     params:
         target_bed        = config["table_data"]["target_rsid"],
         hidden_haplotypes = config["table_data"]["hidden_haplotypes"]
     input:
-        vcf = "Results/Pharmacogenomics/Haplotypecaller/filtered/annotated/{sample}_{seqID}.vcf"
+        vcf = "Results/Haplotypecaller/filtered/annotated/{sample}_{seqID}.vcf"
     output:
-        csv = "Results/Pharmacogenomics/Report/detected_variants/{sample}_{seqID}.csv"
+        csv = "Results/Report/detected_variants/{sample}_{seqID}.csv"
     singularity:
         config["singularities"]["get_target"]
     shell:

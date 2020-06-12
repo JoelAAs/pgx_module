@@ -2,6 +2,7 @@ from get_target_variants import GDF
 import argparse
 import sys
 
+# As script to run "shell:" in snakemake rule to allow singularity run
 
 def main():
     parser = argparse.ArgumentParser(

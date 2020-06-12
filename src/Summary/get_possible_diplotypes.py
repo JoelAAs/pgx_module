@@ -5,7 +5,6 @@ import sys
 import numpy as np
 
 
-# This is possibly the worst code I've written
 
 class ArrangeHaplotype:
     """
@@ -43,9 +42,9 @@ class ArrangeHaplotype:
 
     def get_haplotypes(self):
         """
-        Return treestructure of possible combinations of haplotypes explaning seen variants.
+        Return tree-structure of possible combinations of haplotypes explaning seen variants.
         Assumptions: Haplotype explaning most variants goes first, if any of variants in haplotype
-         is zero the all haplotypes contaning that variant is removed for futher chocies.
+         is zero the all haplotypes containing that variant is removed for futher chocies.
         :return: Gene - haplotype-tree dict
         """
         def _get_haplotypes(variant_subdf, current_haplotype, depth=2):
@@ -75,7 +74,6 @@ class ArrangeHaplotype:
             return [current_haplotype, [
                 _get_haplotypes(variant_subdf.copy(), hap, depth - 1) for hap in remaining_haplo
             ]]
-
 
         genes = set(self.detected_variants["GENE"])
         full_mat = {}

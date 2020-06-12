@@ -1,15 +1,16 @@
 ## NOTE: setting '.libPaths('/lib/rlib')' specific to singularity used
 
 rule GetClinicalGuidelines:
+    """ Given detected variants, get possible Haplotype combinations """
     params:
         haplotype_definitions = config["table_data"]["haplotype_definitions"],
         clinical_guidelines   = config["clinical_data"]["clinical_guidelines"],
         haplotype_activity    = config["clinical_data"]["haplotype_activity"],
         hidden_haplotypes     =config["table_data"]["hidden_haplotypes"]
     input:
-        found_variants  = "Results/Pharmacogenomics/Report/detected_variants/{sample}_{seqID}.csv",
+        found_variants  = "Results/Report/detected_variants/{sample}_{seqID}.csv",
     output:
-        csv = "Results/Pharmacogenomics/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
+        csv = "Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -24,17 +25,17 @@ rule GetClinicalGuidelines:
         """
 
 
-# TODO: Add graphics for coverage and clinical guidelines
 rule GeneratePGXReport:
+    """ Generates markdown report per sample """
     params:
         haplotype_definitions = config["table_data"]["haplotype_definitions"]
     input:
-        found_variants  = "Results/Pharmacogenomics/Report/detected_variants/{sample}_{seqID}.csv",
-        missed_variants = "Results/Pharmacogenomics/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf",
-        diploids        = "Results/Pharmacogenomics/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv",
-        depth_at_baits  = "Results/Pharmacogenomics/gdf/{sample}_{seqID}.gdf"
+        found_variants  = "Results/Report/detected_variants/{sample}_{seqID}.csv",
+        missed_variants = "Results/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf",
+        diploids        = "Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv",
+        depth_at_baits  = "Results/gdf/{sample}_{seqID}.gdf"
     output:
-        html = "Results/Pharmacogenomics/Report/{sample}_{seqID}_pgx.html"
+        html = "Results/Report/{sample}_{seqID}_pgx.html"
     singularity:
         config["singularities"]["rmarkdown"]
     shell:

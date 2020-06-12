@@ -3,9 +3,9 @@ rule SampleTargetList:
     params:
         target_bed = config["table_data"]["target_rsid"]
     input:
-        detected_variants = "Results/Pharmacogenomics/Report/detected_variants/{sample}_{seqID}.csv"
+        detected_variants = "Results/Report/detected_variants/{sample}_{seqID}.csv"
     output:
-        interval = "Results/Pharmacogenomics/Report/coverage/{sample}_{seqID}_target_interval.list"
+        interval = "Results/Report/coverage/{sample}_{seqID}_target_interval.list"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -18,14 +18,15 @@ rule SampleTargetList:
 
 
 rule DepthOfTargets:
+    """ Get read depth of variant locations at wildtrype-called positions """
     params:
         ref        = config["reference_fasta"],
         target_bed = config["table_data"]["target_rsid"]
     input:
-        bam      = "Results/Pharmacogenomics/bam/{sample}_{seqID}-dedup.filtered.bam",
-        interval = "Results/Pharmacogenomics/Report/coverage/{sample}_{seqID}_target_interval.list"
+        bam      = "Results/bam/{sample}_{seqID}-dedup.filtered.bam",
+        interval = "Results/Report/coverage/{sample}_{seqID}_target_interval.list"
     output:
-        gdf      = "Results/Pharmacogenomics/Report/coverage/{sample}_{seqID}_depth_at_missing.gdf",
+        gdf      = "Results/Report/coverage/{sample}_{seqID}_depth_at_missing.gdf",
 
     singularity:
         config["singularities"]["gatk3"]
@@ -40,7 +41,7 @@ rule GetPaddedBaits:
         padding= 100,
         target_bed = config["table_data"]["target_regions"],
     output:
-        interval = "Results/Pharmacogenomics/gdf/padded_bait_interval.list"
+        interval = "Results/gdf/padded_bait_interval.list"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -53,15 +54,16 @@ rule GetPaddedBaits:
 
 
 rule DepthOfBaits:
+    """ Get read depth of baits """
     params:
         ref        = config["reference_fasta"],
         target_bed = config["table_data"]["target_regions"],
         padding = 100
     input:
-        bam      = "Results/Pharmacogenomics/bam/{sample}_{seqID}-dedup.filtered.bam",
-        interval = "Results/Pharmacogenomics/gdf/padded_bait_interval.list"
+        bam      = "Results/bam/{sample}_{seqID}-dedup.filtered.bam",
+        interval = "Results/gdf/padded_bait_interval.list"
     output:
-        gdf      = "Results/Pharmacogenomics/gdf/{sample}_{seqID}.gdf",
+        gdf      = "Results/gdf/{sample}_{seqID}.gdf",
     singularity:
         config["singularities"]["gatk3"]
     shell:
