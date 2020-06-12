@@ -1,0 +1,34 @@
+singularities:
+    gatk3:      "envs/gatk3.simg"
+    gatk4:      "envs/gatk4.simg"
+    rmarkdown:  "envs/rmarkdown.simg"
+    samtools:   "envs/samtools.simg"
+    get_target: "envs/target_variants_python.simg"
+
+table_data:
+    target_regions:        "data/genomic_regions/exons_variants_pharmacogenomics_18_06_2019_ex_cyp2d6.bed"
+    target_rsid:           "data/genomic_regions/target_rsid.bed"
+    haplotype_definitions: "data/haplotypes/haplotype_definitions.csv"
+    hidden_haplotypes:     "data/haplotypes/hidden_haplotpyes.csv"
+
+clinical_data:
+    clinical_guidelines: "data/guidelines/clinical_guidelines.csv"
+    haplotype_activity:  "data/guidelines/haplotype_activity_score.csv"
+
+reference_fasta: "/home/joel/Documents/Resourses/GATK/ucsc.hg19.fasta"
+dbsnp: "/home/joel/Documents/Resourses/GATK/dbsnp_138.hg19.vcf"
+
+## Input location
+bam_location:
+    "/home/joel/Documents/GMS/pipelines/variant_calling_gms/run_folder/bams/dedup/{sample}_{seqID}_dedup.bam"
+
+## Ex
+samples:
+    - "FARM_1B"
+    - "FARM_2B"
+    - "FARM_3"
+    - "FARM_4"
+    - "FARM_5"
+
+seqID:
+    sequencerun: "200110"

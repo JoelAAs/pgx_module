@@ -1,0 +1,44 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get -y update
+    apt-get -y install language-pack-sv-base
+    echo 'export LANG=sv_SE.UTF-8' >>$SINGULARITY_ENVIRONMENT
+
+    apt-get -y install gnupg
+    apt-get -y install software-properties-common apt-utils
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+    add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
+    apt-get -y update
+
+    apt-get -y upgrade
+    apt-get -y dist-upgrade
+
+    apt-get -y install r-base
+
+    apt-get -y install libcurl4-openssl-dev
+    apt-get -y install libssl-dev
+    apt-get -y install libxml2-dev
+    apt-get -y install pandoc
+
+    mkdir /lib/rlib
+    R --slave -e 'install.packages("rmarkdown", lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("kableExtra",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("knitr",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("forcats",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("stringr",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("dplyr",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("purrr",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("readr",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("tidyr",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("rlang",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("tibble",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("tidyverse",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("ggplot2",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("rmdformats",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("plotly",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("reshape2",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'
+    R --slave -e 'install.packages("cowplot",  lib="/lib/rlib", repos="https://ftp.acc.umu.se/mirror/CRAN/")'

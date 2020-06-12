@@ -1,0 +1,16 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get -y update
+    apt-get -y install python3
+    apt-get -y install python3-pip
+    apt-get -y install zlib1g-dev
+    apt-get -y install libbz2-dev
+    apt-get -y install liblzma-dev
+    pip3 install pandas==1.0.3
+    pip3 install argparse==1.4.0
+    pip3 install cython
+    pip3 install pysam==0.15.4

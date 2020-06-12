@@ -1,0 +1,111 @@
+```{r input, include=FALSE, echo=FALSE}
+## AUTHOR: Joel Ås
+library(rmdformats)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+source("Coverage_Target_plot.R")
+
+
+# Input
+args <- commandArgs(TRUE)
+parseArgs <- function(x) strsplit(sub("^--", "", x), "=")
+argsDF <- as.data.frame(do.call("rbind", parseArgs(args)))
+argsL <- as.list(as.character(argsDF$V2))
+names(argsL) <- argsDF$V1
+
+detected_variants <- read.csv(argsL$found_variants, sep = "\t", stringsAsFactors = F, row.names = NULL)
+missed_variants <- read.csv(argsL$missed_variants, sep = "\t", stringsAsFactors = F,  row.names = NULL)
+haplotype_definitions <- read.csv(argsL$haplotype_definitions, sep = "\t", stringsAsFactors = F,  row.names = NULL)
+clinical_guidelines <- read.csv(argsL$clinical_guidelines, sep = "\t", stringsAsFactors = F,  row.names = NULL)
+
+# Functions
+get_haplotypes <- function(ID, haplotype_definitions=haplotype_definitions){
+  haplo <- haplotype_definitions[haplotype_definitions$ID == ID, "HAPLOTYPE"]
+  return(paste(haplo, collapse = "/"))
+}
+```
+
+---
+title: "`r argsL$title`"
+author: "`r argsL$author`"
+date: "Date compiled: `r format(Sys.time(), '%d %B, %Y, %H:%M')`"
+output_format:
+    html_document:
+        toc: True
+        theme: "readthedown"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Kliniska rekommendationer baserad på genotyper
+```{r}
+clin_columns <- c("gene", "Haplotype1", "Haplotype2", "Guideline")
+verbose_columns <- c("Gen", "Haplotyp 1", "Haplotype 2", "Klinisk Rekommendation")
+clinical_guidelines_present <- clinical_guidelines[, clin_columns]
+colnames(clinical_guidelines_present) <- verbose_columns
+clinical_guidelines_present %>%
+    kable(format = "html", escape = F) %>%
+    kable_styling()
+
+```
+
+# Kliniskt relevanta varianter upptäckta
+```{r detected_variants}
+detected_variants$Zygosity <- sapply(detected_variants$GT, function(x){
+   b <- sum(as.numeric(strsplit(x, "[/|]", perl=T)[[1]]))
+   return(c("Hetero-", "Homo-")[b])
+})
+
+if (nrow(detected_variants) != 0) {
+  detected_variants[, c("Ref.reads", "Alt.reads")] <-
+    sapply(detected_variants$AD, function(x) strsplit(x, ",")[[1]])
+
+  detected_variants$Haplotype <-
+    sapply(detected_variants$ID, function(x) get_haplotypes(x, haplotype_definitions))
+
+  columns <- c("GENE", "ID", "Haplotype", "Zygosity",  "Ref.reads", "Alt.reads", "GQ")
+  verbose_columns <- c("Gen", "rsID", "Möjliga Haplotyper", "Zygositet",
+                       "Ref Reads", "Alt Reads", "GQ")
+  detected_variants_present <- detected_variants[, columns]
+  colnames(detected_variants_present) <- verbose_columns
+  detected_variants_present %>%
+    kable() %>% 
+    kable_styling()
+}
+``` 
+
+# Läsdjup vid wildtyp kliniska targets
+```{r coverage_wildtype}
+columns <- c("ID", "Haplotype", "Locus", "Total_Depth")
+missed_variants$Haplotype <-
+  sapply(missed_variants$ID, function(x) get_haplotypes(x, haplotype_definitions))
+missed_variants[, columns] %>% 
+  kable() %>% 
+  kable_styling()
+```
+
+
+# Läsdjup vid baits
+```{r full_burden, results="asis"}
+
+bait_table_file <- paste0(
+    argsL$data_location,
+    "/genomic_regions/exons_variants_pharmacogenomics_18_06_2019_ex_cyp2d6.bed"
+    )
+genes <- read.table(bait_table_file, sep = "\t", as.is=T, check.names = F,
+                           col.names = c("Chr", "Start", "End", "Name")) %>%
+    separate(Name, c("Target", "Gene"), "_") %>% {unique(.$Gene)}
+
+for (gene in genes){
+  exon_table_file <- paste0(argsL$data_location, "/exons/", gene,".csv")
+  target_table_file <- paste0(argsL$data_location, "/genomic_regions/target_rsid.bed")
+  gdf_file <- argsL$depth_file
+
+  cat(paste0("## Läsdjup för: ", gene, "\n"))
+  print(get_cov_target_plot(exon_table_file, bait_table_file, target_table_file, gdf_file, gene))
+  cat("\n\n")
+}
+```
