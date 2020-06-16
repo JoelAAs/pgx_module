@@ -1,5 +1,22 @@
-configfile: "data/example_config.yaml"
+configfile: "config.yaml"
 
+import re; import glob
+
+### Config
+glob_pattern = f'{config["input_dir"]}/{config["seqID"]["sequencerun"]}/Results/*{config["seqID"]["sequencerun"]}'
+folders = glob.glob(glob_pattern)
+config["samples"] = [re.search(f'/([\w,-]+)_{config["seqID"]["sequencerun"]}', f).groups()[0] for  f in folders]
+config["samples"].remove("batchQC")
+
+def load_local(path):
+    return f'{config["run_location"]}/{path}'
+
+wildcard_constraints:
+    seqID = config["seqID"]["sequencerun"],
+    sample = "[[a-zA-Z0-9-_\.]+"
+
+
+### Include
 include:    "src/Annotation/VariantAnnotator.smk"
 include:    "src/Variantcalling/HaplotypeCaller.smk"
 include:    "src/Summary/DetectedVariants.smk"
@@ -13,6 +30,6 @@ include:    "src/Filtering/SubsetReadsTarget.smk"
 rule All:
     input:
          expand(
-             "Results/Report/{sample}_{seqID}_pgx.html",
+             "work/{seqID}/Results/Report/{sample}_{seqID}_pgx.html",
                 sample=config["samples"],
                 seqID=config["seqID"]["sequencerun"])

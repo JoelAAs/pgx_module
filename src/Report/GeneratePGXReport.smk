@@ -3,15 +3,15 @@
 rule GetClinicalGuidelines:
     """ Given detected variants, get possible Haplotype combinations """
     params:
-        haplotype_definitions = config["table_data"]["haplotype_definitions"],
-        clinical_guidelines   = config["clinical_data"]["clinical_guidelines"],
-        haplotype_activity    = config["clinical_data"]["haplotype_activity"],
-        hidden_haplotypes     = config["table_data"]["hidden_haplotypes"],
+        haplotype_definitions = load_local(config["table_data"]["haplotype_definitions"]),
+        clinical_guidelines   = load_local(config["clinical_data"]["clinical_guidelines"]),
+        haplotype_activity    = load_local(config["clinical_data"]["haplotype_activity"]),
+        hidden_haplotypes     = load_local(config["table_data"]["hidden_haplotypes"]),
         script_location       = config["run_location"]
     input:
-        found_variants  = "Results/Report/detected_variants/{sample}_{seqID}.csv",
+        found_variants  = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",
     output:
-        csv = "Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
+        csv = "work/{seqID}/Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -32,12 +32,12 @@ rule GeneratePGXReport:
         haplotype_definitions = config["table_data"]["haplotype_definitions"],
         script_location = config["run_location"]
     input:
-        found_variants  = "Results/Report/detected_variants/{sample}_{seqID}.csv",
-        missed_variants = "Results/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf",
-        diploids        = "Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv",
-        depth_at_baits  = "Results/gdf/{sample}_{seqID}.gdf"
+        found_variants  = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",
+        missed_variants = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf",
+        diploids        = "work/{seqID}/Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv",
+        depth_at_baits  = "work/{seqID}/Results/gdf/{sample}_{seqID}.gdf"
     output:
-        html = "Results/Report/{sample}_{seqID}_pgx.html"
+        html = "work/{seqID}/Results/Report/{sample}_{seqID}_pgx.html"
     singularity:
         config["singularities"]["rmarkdown"]
     shell:
@@ -48,8 +48,8 @@ rule GeneratePGXReport:
             --args --title={wildcards.sample} --author=joel \
             --found_variants=$wkdir/{input.found_variants} \
             --missed_variants=$wkdir/{input.missed_variants}  \
-            --haplotype_definitions=$wkdir/{params.haplotype_definitions} \
+            --haplotype_definitions={params.haplotype_definitions} \
             --clinical_guidelines=$wkdir/{input.diploids} \
-            --data_location=$wkdir/data \
+            --data_location={params.script_location}/data \
             --depth_file=$wkdir/{input.depth_at_baits}
         """

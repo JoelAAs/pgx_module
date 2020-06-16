@@ -96,7 +96,7 @@ missed_variants[, columns] %>%
 
 bait_table_file <- paste0(
     argsL$data_location,
-    "/genomic_regions/exons_variants_pharmacogenomics_18_06_2019_ex_cyp2d6.bed"
+    "data/genomic_regions/exons_variants_pharmacogenomics_18_06_2019_ex_cyp2d6.bed"
     )
 genes <- read.table(bait_table_file, sep = "\t", as.is=T, check.names = F,
                            col.names = c("Chr", "Start", "End", "Name")) %>%

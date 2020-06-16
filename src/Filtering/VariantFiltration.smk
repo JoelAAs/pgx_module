@@ -5,9 +5,9 @@ rule VariantFiltration:
         read_ratio = 0.2,
         script_location = config["run_location"]
     input:
-        vcf = "Results/Haplotypecaller/{sample}_{seqID}.vcf"
+        vcf = "work/{seqID}/Results/Haplotypecaller/{sample}_{seqID}.vcf"
     output:
-        filtered_vcf = "Results/Haplotypecaller/filtered/{sample}_{seqID}.vcf"
+        filtered_vcf = "work/{seqID}/Results/Haplotypecaller/filtered/{sample}_{seqID}.vcf"
     singularity:
         config["singularities"]["get_target"]
     shell:

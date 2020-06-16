@@ -4,10 +4,10 @@ rule Haplotypecaller:
         ref   = config["reference_fasta"],
         dbsnp = config["dbsnp"]
     input:
-        bam = "Results/bam/{sample}_{seqID}-dedup.filtered.bam",
-        bai = "Results/bam/{sample}_{seqID}-dedup.filtered.bam.bai"
+        bam = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
+        bai = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam.bai"
     output:
-        vcf = "Results/Haplotypecaller/{sample}_{seqID}.vcf"
+        vcf = "work/{seqID}/Results/Haplotypecaller/{sample}_{seqID}.vcf"
     singularity:
         config["singularities"]["gatk4"]
     shell:

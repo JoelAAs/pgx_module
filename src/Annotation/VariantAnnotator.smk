@@ -4,10 +4,10 @@ rule VariantAnnotator:
         dbsnp = config["dbsnp"],
         ref   = config["reference_fasta"]
     input:
-        vcf = "Results/Haplotypecaller/filtered/{sample}_{seqID}.vcf",
-        bam = "Results/bam/{sample}_{seqID}-dedup.filtered.bam"
+        vcf = "work/{seqID}/Results/Haplotypecaller/filtered/{sample}_{seqID}.vcf",
+        bam = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam"
     output:
-        vcf = "Results/Haplotypecaller/filtered/annotated/{sample}_{seqID}.vcf",
+        vcf = "work/{seqID}/Results/Haplotypecaller/filtered/annotated/{sample}_{seqID}.vcf",
     singularity:
         config["singularities"]["gatk4"]
     shell:

@@ -2,10 +2,10 @@
 rule GetPaddedBed:
     params:
         padding= 100,
-        target_bed = config["table_data"]["target_regions"],
+        target_bed = load_local(config["table_data"]["target_regions"]),
         script_location = config["run_location"]
     output:
-        interval = "Results/bam/padded_bait_interval.bed"
+        interval = "work/{seqID}/Results/bam/padded_bait_interval.bed"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -24,10 +24,10 @@ rule Subset_pharmacogenomic_reads:
     input:
         bam   = config["bam_location"],
         index = config["bam_location"] + ".bai",
-        region_list = "Results/bam/padded_bait_interval.bed"
+        region_list = "work/{seqID}/Results/bam/padded_bait_interval.bed"
     output:
-        bam = "Results/bam/{sample}_{seqID}-dedup.filtered.bam",
-        bai = "Results/bam/{sample}_{seqID}-dedup.filtered.bam.bai"
+        bam = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
+        bai = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam.bai"
     singularity:
         config["singularities"]["samtools"]
     shell:

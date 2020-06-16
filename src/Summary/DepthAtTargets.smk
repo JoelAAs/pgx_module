@@ -1,12 +1,12 @@
 
 rule SampleTargetList:
     params:
-        target_bed = config["table_data"]["target_rsid"],
+        target_bed = load_local(config["table_data"]["target_rsid"]),
         script_location   = config["run_location"]
     input:
-        detected_variants = "Results/Report/detected_variants/{sample}_{seqID}.csv",
+        detected_variants = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",
     output:
-        interval = "Results/Report/coverage/{sample}_{seqID}_target_interval.list"
+        interval = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_target_interval.list"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -22,12 +22,12 @@ rule DepthOfTargets:
     """ Get read depth of variant locations at wildtrype-called positions """
     params:
         ref        = config["reference_fasta"],
-        target_bed = config["table_data"]["target_rsid"]
+        target_bed = load_local(config["table_data"]["target_rsid"])
     input:
-        bam      = "Results/bam/{sample}_{seqID}-dedup.filtered.bam",
-        interval = "Results/Report/coverage/{sample}_{seqID}_target_interval.list"
+        bam      = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
+        interval = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_target_interval.list"
     output:
-        gdf      = "Results/Report/coverage/{sample}_{seqID}_depth_at_missing.gdf",
+        gdf      = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_depth_at_missing.gdf",
 
     singularity:
         config["singularities"]["gatk3"]
@@ -40,10 +40,10 @@ rule DepthOfTargets:
 rule GetPaddedBaits:
     params:
         padding= 100,
-        target_bed = config["table_data"]["target_regions"],
+        target_bed = load_local(config["table_data"]["target_regions"]),
         script_location   = config["run_location"]
     output:
-        interval = "Results/gdf/padded_bait_interval.list"
+        interval = "work/{seqID}/Results/gdf/padded_bait_interval.list"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -59,13 +59,13 @@ rule DepthOfBaits:
     """ Get read depth of baits """
     params:
         ref        = config["reference_fasta"],
-        target_bed = config["table_data"]["target_regions"],
+        target_bed = load_local(config["table_data"]["target_regions"]),
         padding = 100
     input:
-        bam      = "Results/bam/{sample}_{seqID}-dedup.filtered.bam",
-        interval = "Results/gdf/padded_bait_interval.list"
+        bam      = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
+        interval = "work/{seqID}/Results/gdf/padded_bait_interval.list"
     output:
-        gdf      = "Results/gdf/{sample}_{seqID}.gdf",
+        gdf      = "work/{seqID}/Results/gdf/{sample}_{seqID}.gdf",
     singularity:
         config["singularities"]["gatk3"]
     shell:
