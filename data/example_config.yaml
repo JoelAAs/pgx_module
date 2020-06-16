@@ -22,13 +22,6 @@ dbsnp: "/home/joel/Documents/Resourses/GATK/dbsnp_138.hg19.vcf"
 bam_location:
     "/home/joel/Documents/GMS/pipelines/variant_calling_gms/run_folder/bams/dedup/{sample}_{seqID}_dedup.bam"
 
-## Ex
-samples:
-    - "FARM_1B"
-    - "FARM_2B"
-    - "FARM_3"
-    - "FARM_4"
-    - "FARM_5"
 
 seqID:
     sequencerun: "200110"
