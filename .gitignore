@@ -1,3 +1,4 @@
 Results/*
 *.simg
 .idea/*
+.snakemake/*
