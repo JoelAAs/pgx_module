@@ -1,16 +1,17 @@
 
 rule SampleTargetList:
     params:
-        target_bed = config["table_data"]["target_rsid"]
+        target_bed = config["table_data"]["target_rsid"],
+        script_location   = config["run_location"]
     input:
-        detected_variants = "Results/Report/detected_variants/{sample}_{seqID}.csv"
+        detected_variants = "Results/Report/detected_variants/{sample}_{seqID}.csv",
     output:
         interval = "Results/Report/coverage/{sample}_{seqID}_target_interval.list"
     singularity:
         config["singularities"]["get_target"]
     shell:
         """
-        python3 src/Summary/reform_genomic_region.py \
+        python3 {params.script_location}/src/Summary/reform_genomic_region.py \
             --target_bed={params.target_bed} \
             --output_file={output.interval} \
             --detected_variants={input.detected_variants}
@@ -40,13 +41,14 @@ rule GetPaddedBaits:
     params:
         padding= 100,
         target_bed = config["table_data"]["target_regions"],
+        script_location   = config["run_location"]
     output:
         interval = "Results/gdf/padded_bait_interval.list"
     singularity:
         config["singularities"]["get_target"]
     shell:
         """
-        python3 src/Summary/reform_genomic_region.py \
+        python3 {params.script_location}/src/Summary/reform_genomic_region.py \
             --target_bed={params.target_bed} \
             --output_file={output.interval} \
             --padding={params.padding}

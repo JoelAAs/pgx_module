@@ -2,7 +2,8 @@
 rule AppendIDtoGDF:
     """ Add variant id to appropriate location in gdf """
     params:
-        target_bed = config["table_data"]["target_rsid"]
+        target_bed = config["table_data"]["target_rsid"],
+        script_location   = config["run_location"]
     input:
         gdf = "Results/Report/coverage/{sample}_{seqID}_depth_at_missing.gdf"
     output:
@@ -11,7 +12,7 @@ rule AppendIDtoGDF:
         config["singularities"]["get_target"]
     shell:
          """
-         python3 src/Summary/append_rsid_to_gdf.py \
+         python3 {params.script_location}/src/Summary/append_rsid_to_gdf.py \
             --input_gdf={input.gdf} \
             --target_bed={params.target_bed} \
             --output_file={output.gdf}

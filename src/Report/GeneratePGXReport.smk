@@ -6,7 +6,8 @@ rule GetClinicalGuidelines:
         haplotype_definitions = config["table_data"]["haplotype_definitions"],
         clinical_guidelines   = config["clinical_data"]["clinical_guidelines"],
         haplotype_activity    = config["clinical_data"]["haplotype_activity"],
-        hidden_haplotypes     =config["table_data"]["hidden_haplotypes"]
+        hidden_haplotypes     = config["table_data"]["hidden_haplotypes"],
+        script_location       = config["run_location"]
     input:
         found_variants  = "Results/Report/detected_variants/{sample}_{seqID}.csv",
     output:
@@ -15,7 +16,7 @@ rule GetClinicalGuidelines:
         config["singularities"]["get_target"]
     shell:
         """
-        python3 src/Summary/get_possible_diplotypes.py \
+        python3 {params.script_location}/src/Summary/get_possible_diplotypes.py \
             --variant_csv {input.found_variants} \
             --haplotype_definitions {params.haplotype_definitions} \
             --clinical_guidelines {params.clinical_guidelines} \
@@ -28,7 +29,8 @@ rule GetClinicalGuidelines:
 rule GeneratePGXReport:
     """ Generates markdown report per sample """
     params:
-        haplotype_definitions = config["table_data"]["haplotype_definitions"]
+        haplotype_definitions = config["table_data"]["haplotype_definitions"],
+        script_location = config["run_location"]
     input:
         found_variants  = "Results/Report/detected_variants/{sample}_{seqID}.csv",
         missed_variants = "Results/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf",
@@ -42,7 +44,7 @@ rule GeneratePGXReport:
         """
         wkdir=$(pwd)  # Needed since Rscript will set wd to location of file not session
         Rscript \
-            -e ".libPaths('/lib/rlib'); library(rmdformats); rmarkdown::render('src/Report/generate_sample_report.Rmd', output_file='$wkdir/{output.html}', output_format=c('readthedown'))" \
+            -e ".libPaths('/lib/rlib'); library(rmdformats); rmarkdown::render('{params.script_location}/src/Report/generate_sample_report.Rmd', output_file='$wkdir/{output.html}', output_format=c('readthedown'))" \
             --args --title={wildcards.sample} --author=joel \
             --found_variants=$wkdir/{input.found_variants} \
             --missed_variants=$wkdir/{input.missed_variants}  \

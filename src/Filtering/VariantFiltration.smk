@@ -2,7 +2,8 @@
 rule VariantFiltration:
     params:
         DP = 100,
-        read_ratio = 0.2
+        read_ratio = 0.2,
+        script_location = config["run_location"]
     input:
         vcf = "Results/Haplotypecaller/{sample}_{seqID}.vcf"
     output:
@@ -11,7 +12,7 @@ rule VariantFiltration:
         config["singularities"]["get_target"]
     shell:
         """
-        python3 src/Filtering/variant_filtration.py \
+        python3 {params.script_location}/Filtering/variant_filtration.py \
             --input_vcf={input.vcf} \
             --read_ratio={params.read_ratio} \
             --depth={params.DP} \
