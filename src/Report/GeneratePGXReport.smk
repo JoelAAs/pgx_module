@@ -29,7 +29,7 @@ rule GetClinicalGuidelines:
 rule GeneratePGXReport:
     """ Generates markdown report per sample """
     params:
-        haplotype_definitions = config["table_data"]["haplotype_definitions"],
+        haplotype_definitions = load_local(config["table_data"]["haplotype_definitions"]),
         script_location = config["run_location"]
     input:
         found_variants  = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",

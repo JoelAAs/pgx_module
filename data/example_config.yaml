@@ -23,5 +23,3 @@ bam_location:
     "/home/joel/Documents/GMS/pipelines/variant_calling_gms/run_folder/bams/dedup/{sample}_{seqID}_dedup.bam"
 
 
-seqID:
-    sequencerun: "200110"
