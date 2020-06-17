@@ -43,8 +43,9 @@ rule GeneratePGXReport:
     shell:
         """
         wkdir=$(pwd)  # Needed since Rscript will set wd to location of file not session
+        intdir=$(echo {output.html} | head -c -6)
         Rscript \
-            -e ".libPaths('/lib/rlib'); library(rmdformats); rmarkdown::render('{params.script_location}/src/Report/generate_sample_report.Rmd', output_file='$wkdir/{output.html}', output_format=c('readthedown'))" \
+            -e ".libPaths('/lib/rlib'); library(rmdformats); rmarkdown::render('{params.script_location}/src/Report/generate_sample_report.Rmd', output_file='$wkdir/{output.html}', output_format=c('readthedown'), intermediates_dir='$wkdir/$intdir')" \
             --args --title={wildcards.sample} --author=joel \
             --found_variants=$wkdir/{input.found_variants} \
             --missed_variants=$wkdir/{input.missed_variants}  \
