@@ -5,12 +5,12 @@ import sys
 import numpy as np
 
 
-
 class ArrangeHaplotype:
     """
     Get possible haplotypes from variant combinations detected in file.
     Add clinical guidelines based on the haplotypes detected
     """
+
     def __init__(self,
                  detected_variants,
                  haplotype_definitions,
@@ -47,6 +47,7 @@ class ArrangeHaplotype:
          is zero the all haplotypes containing that variant is removed for futher chocies.
         :return: Gene - haplotype-tree dict
         """
+
         def _get_haplotypes(variant_subdf, current_haplotype, depth=2):
             idx = variant_subdf["multival_haplotype"].apply(lambda x: current_haplotype in x)
             variant_subdf.loc[idx, "CN"] -= 1
@@ -131,7 +132,7 @@ class ArrangeHaplotype:
     def get_clinical_guidelines_table(self):
         if self.detected_variants.empty:
             columns = [
-                "gene",	"Haplotype1", "Haplotype2",
+                "gene", "Haplotype1", "Haplotype2",
                 "HAPLOTYPE1", "ACTIVITY_SCORE1", "HAPLOTYPE2",
                 "ACTIVITY_SCORE2", "Genotype_activity",
                 "Gene", "Activity", "Guideline"
@@ -179,11 +180,11 @@ def main():
 
     df = ah.get_clinical_guidelines_table()
     columns = [
-                "gene",	"Haplotype1", "Haplotype2",
-                "HAPLOTYPE1", "ACTIVITY_SCORE1", "HAPLOTYPE2",
-                "ACTIVITY_SCORE2", "Genotype_activity",
-                "Gene", "Activity", "Guideline"
-            ]
+        "gene", "Haplotype1", "Haplotype2",
+        "HAPLOTYPE1", "ACTIVITY_SCORE1", "HAPLOTYPE2",
+        "ACTIVITY_SCORE2", "Genotype_activity",
+        "Gene", "Activity", "Guideline"
+    ]
     if not df.empty:
         hidden_haplotypes = pd.read_csv(
             hidden_haplotypes, sep="\t"

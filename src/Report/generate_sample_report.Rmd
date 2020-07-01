@@ -63,8 +63,7 @@ detected_variants$Zygosity <- sapply(detected_variants$GT, function(x){
 })
 
 if (nrow(detected_variants) != 0) {
-  detected_variants[, c("Ref.reads", "Alt.reads")] <-
-    sapply(detected_variants$AD, function(x) strsplit(x, ",")[[1]])
+  detected_variants <- detected_variants %>% separate("AD", c("Ref.reads", "Alt.reads"), ",", remove=F)
 
   detected_variants$Haplotype <-
     sapply(detected_variants$ID, function(x) get_haplotypes(x, haplotype_definitions))
