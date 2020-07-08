@@ -2,3 +2,5 @@ Results/*
 *.simg
 .idea/*
 .snakemake/*
+dev/*
+test/*
