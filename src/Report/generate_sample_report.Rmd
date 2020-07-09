@@ -25,12 +25,12 @@ clinical_guidelines <- read.csv(argsL$clinical_guidelines, sep = "\t", stringsAs
 
 # Formating
 risk_duplication <- function(x){
-  min_dup_var <- min(c(1/4, 1/3, 2/3, 3/4) - x)
-  min_diploid <- min(c(0, 1/2, 1) - x)
+  min_dup_var <- min(abs(c(1/4, 1/3, 2/3, 3/4) - x))
+  min_diploid <- min(abs(c(0, 1) - x))
   if (min_dup_var > min_diploid){
     return(FALSE)
   }
-  return(True)
+  return(TRUE)
 }
 # Functions
 get_haplotypes <- function(ID, haplotype_definitions=haplotype_definitions) {
@@ -57,6 +57,13 @@ if (nrow(detected_variants) != 0) {
   colnames(detected_variants_present) <- verbose_columns
   detected_variants_present[, "Variantfrekvens"] <- detected_variants_present[, "Alt Reads"]/(detected_variants_present[, "Alt Reads"] + detected_variants_present[, "Ref Reads"])
   detected_variants_present[, "Möjlig Duplikation"] <- sapply(detected_variants_present[, "Variantfrekvens"], risk_duplication)
+  faulty_haplotypes <-
+          detected_variants_present[detected_variants_present[, "Möjlig Duplikation"] == TRUE, "Möjliga Haplotyper"]
+
+  faulty_haplotypes <- unique(unlist(sapply(faulty_haplotypes, function(x) strsplit(x, "/"))))
+
+} else {
+  faulty_haplotypes <- array()
 }
 ```
 
@@ -76,15 +83,26 @@ knitr::opts_chunk$set(echo = FALSE)
 # Kliniska rekommendationer baserad på genotyper
 ```{r}
 clin_columns <- c("gene", "Haplotype1", "Haplotype2", "Guideline")
-verbose_columns <- c("Gen", "Haplotyp 1", "Haplotype 2", "Klinisk Rekommendation")
+verbose_columns <- c("Gen", "Haplotyp 1", "Haplotyp 2", "Klinisk Rekommendation")
 clinical_guidelines_present <- clinical_guidelines[, clin_columns]
 colnames(clinical_guidelines_present) <- verbose_columns
 
+warning_idx <- which(clinical_guidelines_present[, "Haplotyp 1"] %in% faulty_haplotypes | clinical_guidelines_present[, "Haplotyp 2"] %in% faulty_haplotypes)
+
 clinical_guidelines_present %>%
     kable(format = "html", escape = F) %>%
-    kable_styling()
+    kable_styling() %>%
+    row_spec(warning_idx, bold=T, color ="white", background = "red")
 
 ```
+
+```{r results="asis"}
+if (length(warning_idx) != 0){
+  cat("<b><u>En eller flera varianter som tillhör haplotyp har flagats som osäker.\n Följ inte rödmarkerade kliniska rekommendationer! </u></b>")
+}
+
+```
+
 
 # Kliniskt relevanta varianter upptäckta
 ```{r detected_variants}
@@ -96,7 +114,7 @@ if (nrow(detected_variants) != 0 ){
 }
 ``` 
 
-# Läsdjup vid wildtyp kliniska targets
+# Läsdjup vid vildtyp kliniska targets
 ```{r coverage_wildtype}
 columns <- c("ID", "Haplotype", "Locus", "Total_Depth")
 missed_variants$Haplotype <-
