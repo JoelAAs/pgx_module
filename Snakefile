@@ -1,12 +1,16 @@
-configfile: "config.yaml"
-
 import re; import glob
 
 ### Config
-glob_pattern = f'{config["input_dir"]}/{config["seqID"]["sequencerun"]}/Results/*{config["seqID"]["sequencerun"]}'
+glob_pattern = config["bam_location"].format(seqID=config["seqID"]["sequencerun"])
+
 folders = glob.glob(glob_pattern)
 config["samples"] = [re.search(f'/([\w,-]+)_{config["seqID"]["sequencerun"]}', f).groups()[0] for  f in folders]
-config["samples"].remove("batchQC")
+
+## Anything that follow this pattern that shouldn't be included? Remove here
+try:
+    config["samples"].remove("batchQC")
+except ValueError:
+    pass
 
 def load_local(path):
     return f'{config["run_location"]}/{path}'

@@ -1,9 +1,9 @@
 singularities:
-    gatk3:      "envs/gatk3.simg"
-    gatk4:      "envs/gatk4.simg"
-    rmarkdown:  "envs/rmarkdown.simg"
-    samtools:   "envs/samtools.simg"
-    get_target: "envs/target_variants_python.simg"
+    gatk3:      "/full/path/to/envs/gatk3.simg"
+    gatk4:      "/full/path/to/envs/gatk4.simg"
+    rmarkdown:  "/full/path/to/envs/rmarkdown.simg"
+    samtools:   "/full/path/to/envs/samtools.simg"
+    get_target: "/full/path/to/envs/target_variants_python.simg"
 
 table_data:
     target_regions:        "data/genomic_regions/exons_variants_pharmacogenomics_18_06_2019_ex_cyp2d6.bed"
@@ -19,7 +19,14 @@ reference_fasta: "/home/joel/Documents/Resourses/GATK/ucsc.hg19.fasta"
 dbsnp: "/home/joel/Documents/Resourses/GATK/dbsnp_138.hg19.vcf"
 
 ## Input location
+input_dir:
+    "/full/path/to/run_folder/bams/dedup"
 bam_location:
-    "/home/joel/Documents/GMS/pipelines/variant_calling_gms/run_folder/bams/dedup/{sample}_{seqID}_dedup.bam"
+    "/full/path/to/bams/dedup/{sample}_{seqID}_dedup.bam"
 
 
+# Contact information
+name: "Person Persson"
+adress: "Gatuvägen stadsplatsen 81, 54321"
+mail: "me@mymail.me"
+phone: "070 123 45 78"
