@@ -13,9 +13,9 @@ exon_table$Start       <- as.numeric(sapply(exon_table$Start, function(x) str_re
 exon_table$End         <- as.numeric(sapply(exon_table$End, function(x) str_remove_all(x, ",")))
 exon_table$Exon_Intron <- exon_table[, "Exon / Intron"]
 
-bait_table <- read.table(bait_table_file, sep = "\t", as.is=T, check.names = F, 
+bait_table <- read.table(bait_table_file, sep = "\t", as.is=T, check.names = F,
                          col.names = c("Chr", "Start", "End", "Name")) %>%
-  separate(Name, c("Target", "Gene"), "_") %>% 
+  separate(Name, c("Target", "Gene"), "_") %>%
   filter(Gene == gene)
 
 row.names(bait_table) <- bait_table$Target
@@ -26,7 +26,7 @@ bait_table$Chr        <- as.character(bait_table$Chr)
 target_table <- read.table(target_table_file, sep = "\t",
                            col.names = c("Chr", "Start", "End", "Rsid", "Gene"))
 
-gdf <- read.csv(gdf_file, sep = "\t") %>% 
+gdf <- read.csv(gdf_file, sep = "\t") %>%
   separate(Locus, c("Chr", "Pos"), ":")
 gdf$Pos <- as.numeric(gdf$Pos)
 gdf$Chr <- sapply(gdf$Chr, function(x) gsub("chr", "", x))
@@ -38,26 +38,26 @@ for (i in 1:nrow(bait_table)) {
   start_pos <- bait_table[i, "Start"] - 1
   end_pos   <- bait_table[i, "End"] + 1
   padding   <- 200
-  
+
   pos_range   <- bait_table[i, "Start"]:bait_table[i, "End"]
   len_pos     <- length(pos_range)
-  
+
   target_pos  <- data.frame(Chr=rep(bait_table[i, "Chr"], len_pos),
                             Pos=pos_range,
                             Target=rep(bait_table[i, "Target"], len_pos),
                             Gene=rep(bait_table[i, "Gene"], len_pos))
-  
-  
+
+
   if (!min(bait_table$Start) == start_pos + 1){
     padding_min <- data.frame(Chr=rep(bait_table[i, "Chr"], padding),
                               Pos=(start_pos-padding + 1):start_pos,
                               Target=rep(paste0("intron", i, "min"), padding),
                               Gene=rep(bait_table[i, "Gene"], padding))
-    tmp <- rbind(padding_min, target_pos)  
+    tmp <- rbind(padding_min, target_pos)
   } else {
     tmp <- target_pos
   }
-  
+
   if (!max(bait_table$End) == end_pos - 1){
     padding_max <- data.frame(Chr=rep(bait_table[i, "Chr"], padding),
                             Pos=end_pos:(end_pos + padding - 1),
@@ -65,10 +65,10 @@ for (i in 1:nrow(bait_table)) {
                             Gene=rep(bait_table[i, "Gene"], padding))
     tmp <- rbind(tmp, padding_max)
   }
-  
-  
-  
-  pos_bait_table <- rbind(pos_bait_table, tmp) 
+
+
+
+  pos_bait_table <- rbind(pos_bait_table, tmp)
 }
 
 # Plotting
@@ -78,10 +78,10 @@ plot_table$plot_range <- 1:nrow(plot_table)
 plot_table_exon   <- plot_table %>% filter(grepl("exon", Target)) %>%  group_by(Target)
 plot_table_intron <- plot_table %>% filter(!grepl("exon", Target)) %>%  group_by(Target)
 plot_table_rsids  <- target_table %>%
-  filter(Gene == gene) %>% 
+  filter(Gene == gene) %>%
   melt(id=c("Chr", "Rsid", "Gene"), value.name = "Pos") %>%
   {merge(., plot_table, all.x=T)} %>% group_by(Rsid)
-plot_table_detected_variants <- detected_variants %>% 
+plot_table_detected_variants <- detected_variants %>%
   filter(GENE==gene) %>%  {merge(., plot_table, by.x="POS", by.y="Pos", all.x=T)}
 
 tic_labels     <- sort(unlist(bait_table[, c("Start", "End")]))
@@ -93,15 +93,15 @@ titlefont <- list(
   size = 22
 )
 
-fig <- plot_ly(plot_table, x=~plot_range, y=~Average_Depth_sample,
-               type="scatter", mode="lines", name="Läsdjup", line=list(color=color_pallete[1])) %>%
-  add_trace(data=plot_table_exon, x=~plot_range, y=min_cov, text =~Target,
-            type="scatter", mode="lines", size = 0.51, name="Exoner", line=list(color=color_pallete[2])) %>% 
+fig <- plot_ly(plot_table_exon, x=~plot_range, y=min_cov, text =~Target,
+            type="scatter", mode="lines", size=0.5, name="Exoner", line=list(color=color_pallete[2])) %>%
   add_trace(data=plot_table_intron, x=~plot_range, y=min_cov, text ="Intron",
-            type="scatter", mode="lines", size = 0., name="Introner", line=list(color=color_pallete[3])) %>%
+            type="scatter", mode="lines",size=0.4 ,name="Introner", line=list(color=color_pallete[3]), inherit=F) %>%
+  add_trace(data=plot_table, x=~plot_range, y=~Average_Depth_sample,
+            type="scatter", mode="lines", name="Läsdjup", line=list(color=color_pallete[1]), inherit=F) %>%
   add_trace(data=plot_table_rsids, x=~plot_range, y=min_cov-20, text=~Rsid,
             name="Variant targets", size=0.6, type="scatter", mode="markers", inherit = F,
-            marker = list(color=color_pallete[4], line=list(color=color_pallete[4]))) %>% 
+            marker = list(color=color_pallete[4], line=list(color=color_pallete[4]))) %>%
   layout(
     title=list(
       text=paste("Läsdjup över", gene),
@@ -115,9 +115,9 @@ fig <- plot_ly(plot_table, x=~plot_range, y=~Average_Depth_sample,
       tickmode  = "array",
       ticktext = pos_range_tics$Pos,
       tickvals  = pos_range_tics$plot_range,
-      titlefont=titlefont      
+      titlefont=titlefont
     ),
-    autosize = T, 
+    autosize = T,
     margin = list(l=50, r=50, b=50, t=100, pad=3),
     legend = list(font=list(size=18)),
     plot_bgcolor=background_color

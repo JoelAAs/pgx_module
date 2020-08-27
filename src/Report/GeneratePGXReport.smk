@@ -30,7 +30,13 @@ rule GeneratePGXReport:
     """ Generates markdown report per sample """
     params:
         haplotype_definitions = load_local(config["table_data"]["haplotype_definitions"]),
-        script_location = config["run_location"]
+        script_location = config["run_location"],
+        dbsnp = config["dbsnp"],
+        ref = config["reference_fasta"],
+        name = config["name"],
+        adress = config["adress"],
+        mail = config["mail"],
+        phone = config["phone"],
     input:
         found_variants  = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",
         missed_variants = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf",
@@ -46,11 +52,21 @@ rule GeneratePGXReport:
         intdir=$(echo {output.html} | head -c -6)
         Rscript \
             -e ".libPaths('/lib/rlib'); library(rmdformats); rmarkdown::render('{params.script_location}/src/Report/generate_sample_report.Rmd', output_file='$wkdir/{output.html}', output_format=c('readthedown'), intermediates_dir='$wkdir/$intdir')" \
-            --args --title={wildcards.sample} --author=joel \
+            --args --title='Farmakogenomisk analys av {wildcards.sample}' --author=joel \
             --found_variants=$wkdir/{input.found_variants} \
             --missed_variants=$wkdir/{input.missed_variants}  \
             --haplotype_definitions={params.haplotype_definitions} \
             --clinical_guidelines=$wkdir/{input.diploids} \
             --data_location={params.script_location}/data \
-            --depth_file=$wkdir/{input.depth_at_baits}
+            --depth_file=$wkdir/{input.depth_at_baits} \
+            --sample={wildcards.sample} \
+            --seqid={wildcards.seqID} \
+            --dbsnp=$(basename {params.dbsnp}) \
+            --ref=$(basename {params.ref}) \
+            --name="{params.name}" \
+            --adress="{params.adress}" \
+            --mail="{params.mail}" \
+            --phone="{params.phone}"
+
+            rmdir $wkdir/$intdir
         """
