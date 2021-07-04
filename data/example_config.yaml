@@ -1,9 +1,9 @@
 singularities:
-    gatk3:      "/full/path/to/envs/gatk3.simg"
-    gatk4:      "/full/path/to/envs/gatk4.simg"
-    rmarkdown:  "/full/path/to/envs/rmarkdown.simg"
-    samtools:   "/full/path/to/envs/samtools.simg"
-    get_target: "/full/path/to/envs/target_variants_python.simg"
+    gatk3:      "/home/joel/Documents/GMS/pipelines/pgx_module/envs/gatk3.simg"
+    gatk4:      "/home/joel/Documents/GMS/pipelines/pgx_module/envs/gatk4.simg"
+    rmarkdown:  "/home/joel/Documents/GMS/pipelines/pgx_module/envs/rmarkdown.simg"
+    samtools:   "/home/joel/Documents/GMS/pipelines/pgx_module/envs/samtools.simg"
+    get_target: "/home/joel/Documents/GMS/pipelines/pgx_module/envs/target_variants_python.simg"
 
 table_data:
     target_regions:        "data/genomic_regions/exons_variants_pharmacogenomics_18_06_2019_ex_cyp2d6.bed"
@@ -12,17 +12,18 @@ table_data:
     hidden_haplotypes:     "data/haplotypes/hidden_haplotpyes.csv"
 
 clinical_data:
-    clinical_guidelines: "data/guidelines/clinical_guidelines.csv"
-    haplotype_activity:  "data/guidelines/haplotype_activity_score.csv"
+    clinical_guidelines:    "data/guidelines/clinical_guidelines.csv"
+    haplotype_activity:     "data/guidelines/haplotype_activity_score.csv"
+    interaction_guidelines: "data/guidelines/interaction_guidelines.csv"
 
 reference_fasta: "/home/joel/Documents/Resourses/GATK/ucsc.hg19.fasta"
 dbsnp: "/home/joel/Documents/Resourses/GATK/dbsnp_138.hg19.vcf"
 
 ## Input location
 input_dir:
-    "/full/path/to/run_folder/bams/dedup"
+    "/home/joel/Documents/GMS/celemics/200709_CE_TS_NE_200626A003-001_Pharmacoscreen"
 bam_location:
-    "/full/path/to/bams/dedup/{sample}_{seqID}_dedup.bam"
+    "/home/joel/Documents/GMS/celemics/200709_CE_TS_NE_200626A003-001_Pharmacoscreen/{sample}.{seqID}.bam"
 
 
 # Contact information

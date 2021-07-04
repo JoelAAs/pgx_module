@@ -3,7 +3,20 @@ library(reshape2)
 library(plotly)
 
 options(warn=-1)
-### STUFF
+
+#### get_ploty_depth_plot
+# Breif: Plots the depth and found targets over region sequenced
+# Input:
+# detected_var_file, (str) path to file containing all targets found
+# target_table_file, (str) path to file containing all targets within region
+# bait_table_file, (str) path to file detailing the targeted regions
+# gdf_file, (str) path to genomic deth file of target
+# exon_table_file, (str) path to exon table for target
+# gene, (str) Name of the gene
+# Output:
+# plotly interactive plot With exons, introns, detected variants, target variants and read depth
+#
+
 get_ploty_depth_plot <- function(detected_var_file, target_table_file, bait_table_file, gdf_file, exon_table_file, gene){
 detected_variants <- read.csv(
   detected_var_file, sep = "\t", stringsAsFactors = F, row.names = NULL)

@@ -25,6 +25,23 @@ rule GetClinicalGuidelines:
             --hidden_haplotypes {params.hidden_haplotypes}
         """
 
+rule Get_interaction_guidelines:
+    """ Given Haplotype Combinations, get possible interactions betweens these """
+    params:
+        interacting_targets = load_local(config["clinical_data"]["interacting_guidelines"])
+    input:
+        diploids = "work/{seqID}/Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
+    output:
+        csv = "work/{seqID}/Results/Report/detected_variants/possible_interactions/{sample}_{seqID}.csv"
+    singularity:
+        config["singularities"]["get_target"]
+    shell:
+        """
+        python3 {params.script_location}/src/Summary/get_interaction_guidelines.py \
+            --diploids {input.diploids} \
+            --interaction_guidelines {params.interacting_targets} \
+            --output {output.csv}
+        """
 
 rule GeneratePGXReport:
     """ Generates markdown report per sample """
@@ -41,7 +58,8 @@ rule GeneratePGXReport:
         found_variants  = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",
         missed_variants = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf",
         diploids        = "work/{seqID}/Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv",
-        depth_at_baits  = "work/{seqID}/Results/gdf/{sample}_{seqID}.gdf"
+        depth_at_baits  = "work/{seqID}/Results/gdf/{sample}_{seqID}.gdf",
+        interactions    = "work/{seqID}/Results/Report/detected_variants/possible_interactions/{sample}_{seqID}.csv"
     output:
         html = "work/{seqID}/Results/Report/{sample}_{seqID}_pgx.html"
     singularity:
@@ -57,6 +75,7 @@ rule GeneratePGXReport:
             --missed_variants=$wkdir/{input.missed_variants}  \
             --haplotype_definitions={params.haplotype_definitions} \
             --clinical_guidelines=$wkdir/{input.diploids} \
+            --interaction_guidelines=$wkdir/{input.interactions} \
             --data_location={params.script_location}/data \
             --depth_file=$wkdir/{input.depth_at_baits} \
             --sample={wildcards.sample} \
