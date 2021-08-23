@@ -1,16 +1,8 @@
 import re; import glob
+import os
 
 ### Config
-glob_pattern = config["bam_location"].format(seqID=config["seqID"]["sequencerun"], sample="*")
-print(config["bam_location"])
-folders = glob.glob(glob_pattern)
-config["samples"] = [re.search(f'/([\w,-]+).{config["seqID"]["sequencerun"]}', f).groups()[0] for  f in folders]
-print(config["samples"])
-## Anything that follow this pattern that shouldn't be included? Remove here
-try:
-    config["samples"].remove("batchQC")
-except ValueError:
-    pass
+config["run_location"] = os.getcwd() + "/pgx_module"
 
 def load_local(path):
     return f'{config["run_location"]}/{path}'
