@@ -39,7 +39,7 @@ rule GetInteractionGuidelines:
     log:
         "logs/PGX/GeneratePGXReport/GetInteractionGuidelines/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["get_target"]
+        config["singularitys"]["get_target"]
     shell:
         """
         python3 {params.script_location}/src/Summary/get_interaction_guidelines.py \
@@ -53,8 +53,8 @@ rule GeneratePGXReport:
     params:
         haplotype_definitions = load_local(config["table_data"]["haplotype_definitions"]),
         script_location = config["run_location"],
-        dbsnp = config["dbsnp"],
-        ref = config["reference_fasta"],
+        dbsnp = config["reference"]["dbsnp"],
+        ref = config["reference"]["ref"],
         name = config["name"],
         adress = config["adress"],
         mail = config["mail"],
@@ -70,7 +70,7 @@ rule GeneratePGXReport:
     log:
         "logs/PGX/GeneratePGXReport/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["rmarkdown"]
+        config["singularitys"]["rmarkdown"]
     shell:
         """
         wkdir=$(pwd)  # Needed since Rscript will set wd to location of file not session

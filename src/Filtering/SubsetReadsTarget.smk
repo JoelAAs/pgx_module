@@ -9,7 +9,7 @@ rule GetPaddedBed:
     log:
         "logs/PGX/SubReadsTarget/padded_reads/{seqID}.log"
     singularity:
-        config["singularities"]["get_target"]
+        config["singularitys"]["get_target"]
     shell:
         """
         python3 {params.script_location}/src/Summary/reform_genomic_region.py \
@@ -33,7 +33,7 @@ rule Subset_pharmacogenomic_reads:
     log:
         "logs/PGX/SubReadsTarget/subset/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["samtools"]
+        config["singularitys"]["samtools"]
     shell:
         """
         samtools view -b {input.bam} -L {input.region_list} > {output.bam} &> {log}

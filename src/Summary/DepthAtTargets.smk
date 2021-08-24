@@ -1,7 +1,7 @@
 
 rule SampleTargetList:
     params:
-        target_bed = load_local(config["table_data"]["target_rsid"]),
+        target_bed        = load_local(config["table_data"]["target_rsid"]),
         script_location   = config["run_location"]
     input:
         detected_variants = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",
@@ -23,7 +23,7 @@ rule SampleTargetList:
 rule DepthOfTargets:
     """ Get read depth of variant locations at wildtrype-called positions """
     params:
-        ref        = config["reference_fasta"],
+        ref        = config["reference"]["ref"],
         target_bed = load_local(config["table_data"]["target_rsid"])
     input:
         bam      = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
@@ -33,7 +33,7 @@ rule DepthOfTargets:
     log:
         "logs/PGX/DepthAtTargets/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["gatk3"]
+        config["singularitys"]["gatk3"]
     shell:
         """
         java -jar /usr/GenomeAnalysisTK.jar -T DepthOfCoverage -R {params.ref} -I {input.bam} -o {output.gdf} -L {input.interval} &> {log}
@@ -42,15 +42,15 @@ rule DepthOfTargets:
 
 rule GetPaddedBaits:
     params:
-        padding= 100,
-        target_bed = load_local(config["table_data"]["target_regions"]),
-        script_location   = config["run_location"]
+        padding         = 100,
+        target_bed      = load_local(config["table_data"]["target_regions"]),
+        script_location = config["run_location"]
     output:
         interval = "work/{seqID}/Results/gdf/padded_bait_interval.list"
     log:
-        "logs/PGX/DepthAtTargets/GetPaddedBaits/{sample}_{seqID}.log"
+        "logs/PGX/DepthAtTargets/GetPaddedBaits/{seqID}.log"
     singularity:
-        config["singularities"]["get_target"]
+        config["singularitys"]["get_target"]
     shell:
         """
         python3 {params.script_location}/src/Summary/reform_genomic_region.py \
@@ -63,9 +63,9 @@ rule GetPaddedBaits:
 rule DepthOfBaits:
     """ Get read depth of baits """
     params:
-        ref        = config["reference_fasta"],
+        ref        = config["reference"]["ref"],
         target_bed = load_local(config["table_data"]["target_regions"]),
-        padding = 100
+        padding    = 100
     input:
         bam      = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
         interval = "work/{seqID}/Results/gdf/padded_bait_interval.list"
@@ -74,7 +74,7 @@ rule DepthOfBaits:
     log:
         "logs/PGX/DepthAtTargets/DepthOfBaits/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["gatk3"]
+        config["singularitys"]["gatk3"]
     shell:
         """
         # NOTE: does not work with openjdk-11, openjdk-8 works

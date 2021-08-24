@@ -11,7 +11,7 @@ rule VariantFiltration:
     log:
         "logs/PGX/VariantFiltration/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["get_target"]
+        config["singularitys"]["get_target"]
     shell:
         """
         python3 {params.script_location}/src/Filtering/variant_filtration.py \

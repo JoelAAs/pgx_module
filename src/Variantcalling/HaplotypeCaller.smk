@@ -1,8 +1,8 @@
 
 rule Haplotypecaller:
     params:
-        ref   = config["reference_fasta"],
-        dbsnp = config["dbsnp"]
+        ref   = config["reference"]["ref"],
+        dbsnp = config["reference"]["dbsnp"]
     input:
         bam = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
         bai = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam.bai"
@@ -11,7 +11,7 @@ rule Haplotypecaller:
     log:
         "logs/PGX/HaplotypeCaller/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["gatk4"]
+        config["singularitys"]["gatk4"]
     shell:
          """
          gatk HaplotypeCaller \

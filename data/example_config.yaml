@@ -1,10 +1,11 @@
 ## Pomfery params
 programdir:
-    dir: "/home/joel/Documents/GMS/pipelines/pomfrey/"
+    dir: "/path/to/pomfrey/"
 
 reference:
-    ref: "" #Path to fasta ref and .fai
-    bwa: "" #Path to bwa indexed ref
+    ref:   "" #Path to fasta ref and .fai
+    bwa:   "" #Path to bwa indexed ref
+    dbsnp: "" #Path to dbsnp.vcf
 
 configCache:
     multiqc: "${PATH_TO_POMFREY}/src/report/multiqc_config.yaml"
@@ -46,13 +47,10 @@ singularitys:
     vt: ""
     igv: ""
     multiqc: ""
-
-singularities:
-    gatk3:      "/home/joel/Documents/GMS/pipelines/pgx_module/envs/gatk3.simg"
-    gatk4:      "/home/joel/Documents/GMS/pipelines/pgx_module/envs/gatk4.simg"
-    rmarkdown:  "/home/joel/Documents/GMS/pipelines/pgx_module/envs/rmarkdown.simg"
-    samtools:   "/home/joel/Documents/GMS/pipelines/pgx_module/envs/samtools.simg"
-    get_target: "/home/joel/Documents/GMS/pipelines/pgx_module/envs/target_variants_python.simg"
+    gatk3:      "path/to/pgx_module/envs/gatk3.simg"
+    rmarkdown:  "path/to/pgx_module/envs/rmarkdown.simg"
+    samtools:   "path/to/pgx_module/envs/samtools.simg"
+    get_target: "path/to/pgx_module/envs/target_variants_python.simg"
 
 
 cartool:
@@ -82,13 +80,10 @@ clinical_data:
     haplotype_activity:     "data/guidelines/haplotype_activity_score.csv"
     interaction_guidelines: "data/guidelines/interaction_guidelines.csv"
 
-reference_fasta: "/home/joel/Documents/Resourses/GATK/ucsc.hg19.fasta"
-dbsnp: "/home/joel/Documents/Resourses/GATK/dbsnp_138.hg19.vcf"
-
 ## Input location
 bam_location: "Results/{sample}_{seqID}/Data/{sample}_{seqID}-dedup.bam"
 
-# Contact information
+## Contact information for PGX reports
 name: "Person Persson"
 adress: "Gatuvägen stadsplatsen 81, 54321"
 mail: "me@mymail.me"

@@ -12,7 +12,7 @@ rule DetectedVariants:
     log:
         "logs/PGX/DetectVariants/{sample}_{seqID}.log"
     singularity:
-        config["singularities"]["get_target"]
+        config["singularitys"]["get_target"]
     shell:
         """
         python3 {params.script_location}/src/Summary/get_target_variants.py \
