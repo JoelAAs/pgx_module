@@ -8,6 +8,8 @@ rule AppendIDtoGDF:
         gdf = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_depth_at_missing.gdf"
     output:
         gdf = "work/{seqID}/Results/Report/coverage/{sample}_{seqID}_depth_at_missing_annotated.gdf"
+    log:
+        "logs/PGX/AppendIDtoGDF/{sample}_{seqID}.log"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -15,5 +17,5 @@ rule AppendIDtoGDF:
          python3 {params.script_location}/src/Summary/append_rsid_to_gdf.py \
             --input_gdf={input.gdf} \
             --target_bed={params.target_bed} \
-            --output_file={output.gdf}
+            --output_file={output.gdf} &> {log}
          """

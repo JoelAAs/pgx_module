@@ -8,6 +8,8 @@ rule Haplotypecaller:
         bai = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam.bai"
     output:
         vcf = "work/{seqID}/Results/Haplotypecaller/{sample}_{seqID}.vcf"
+    log:
+        "logs/PGX/HaplotypeCaller/{sample}_{seqID}.log"
     singularity:
         config["singularities"]["gatk4"]
     shell:
@@ -16,5 +18,5 @@ rule Haplotypecaller:
             -R {params.ref} \
             -I {input.bam} \
             --dbsnp {params.dbsnp} \
-            -O {output.vcf}
+            -O {output.vcf} &> {log}
          """

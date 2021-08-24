@@ -12,6 +12,8 @@ rule GetClinicalGuidelines:
         found_variants  = "work/{seqID}/Results/Report/detected_variants/{sample}_{seqID}.csv",
     output:
         csv = "work/{seqID}/Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
+    log:
+        "logs/PGX/GeneratePGXReport/GetClinicalGuidelines/{sample}_{seqID}.log"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -22,10 +24,10 @@ rule GetClinicalGuidelines:
             --clinical_guidelines {params.clinical_guidelines} \
             --haplotype_activity {params.haplotype_activity} \
             --output {output.csv} \
-            --hidden_haplotypes {params.hidden_haplotypes}
+            --hidden_haplotypes {params.hidden_haplotypes} &> {log}
         """
 
-rule Get_interaction_guidelines:
+rule GetInteractionGuidelines:
     """ Given Haplotype Combinations, get possible interactions betweens these """
     params:
         interacting_targets = load_local(config["clinical_data"]["interaction_guidelines"]),
@@ -34,6 +36,8 @@ rule Get_interaction_guidelines:
         diploids = "work/{seqID}/Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
     output:
         csv = "work/{seqID}/Results/Report/detected_variants/possible_interactions/{sample}_{seqID}.csv"
+    log:
+        "logs/PGX/GeneratePGXReport/GetInteractionGuidelines/{sample}_{seqID}.log"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -41,7 +45,7 @@ rule Get_interaction_guidelines:
         python3 {params.script_location}/src/Summary/get_interaction_guidelines.py \
             --diploids {input.diploids} \
             --interaction_guidelines {params.interacting_targets} \
-            --output {output.csv}
+            --output {output.csv} &> {log}
         """
 
 rule GeneratePGXReport:
@@ -63,6 +67,8 @@ rule GeneratePGXReport:
         interactions    = "work/{seqID}/Results/Report/detected_variants/possible_interactions/{sample}_{seqID}.csv"
     output:
         html = "work/{seqID}/Results/Report/{sample}_{seqID}_pgx.html"
+    log:
+        "logs/PGX/GeneratePGXReport/{sample}_{seqID}.log"
     singularity:
         config["singularities"]["rmarkdown"]
     shell:
@@ -86,7 +92,7 @@ rule GeneratePGXReport:
             --name="{params.name}" \
             --adress="{params.adress}" \
             --mail="{params.mail}" \
-            --phone="{params.phone}"
+            --phone="{params.phone}" &> {log}
 
             rmdir $wkdir/$intdir
         """

@@ -6,6 +6,8 @@ rule GetPaddedBed:
         script_location = config["run_location"]
     output:
         interval = "work/{seqID}/Results/bam/padded_bait_interval.bed"
+    log:
+        "logs/PGX/SubReadsTarget/padded_reads/{seqID}.log"
     singularity:
         config["singularities"]["get_target"]
     shell:
@@ -14,7 +16,7 @@ rule GetPaddedBed:
             --target_bed={params.target_bed} \
             --output_file={output.interval} \
             --padding={params.padding} \
-            --format='bed'
+            --format='bed' &> {log}
         """
 
 
@@ -28,10 +30,12 @@ rule Subset_pharmacogenomic_reads:
     output:
         bam = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam",
         bai = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam.bai"
+    log:
+        "logs/PGX/SubReadsTarget/subset/{sample}_{seqID}.log"
     singularity:
         config["singularities"]["samtools"]
     shell:
         """
-        samtools view -b {input.bam} -L {input.region_list} > {output.bam}
-        samtools index {output.bam}
+        samtools view -b {input.bam} -L {input.region_list} > {output.bam} &> {log}
+        samtools index {output.bam} &>> {log}
         """

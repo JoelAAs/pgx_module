@@ -8,6 +8,8 @@ rule VariantAnnotator:
         bam = "work/{seqID}/Results/bam/{sample}_{seqID}-dedup.filtered.bam"
     output:
         vcf = "work/{seqID}/Results/Haplotypecaller/filtered/annotated/{sample}_{seqID}.vcf",
+    log:
+        "logs/PGX/VariantAnnotator/{sample}_{seqID}.log"
     singularity:
         config["singularities"]["gatk4"]
     shell:
@@ -17,5 +19,5 @@ rule VariantAnnotator:
             -V {input.vcf} \
             -I {input.bam} \
             -O {output.vcf} \
-            --dbsnp {params.dbsnp}
+            --dbsnp {params.dbsnp} &> {log}
         """
