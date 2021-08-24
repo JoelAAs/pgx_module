@@ -2,7 +2,7 @@ import re; import glob
 import os
 
 ### Config
-config["run_location"] = os.getcwd() + "/pgx_module"
+config["run_location"] = config["programdir"]["dir"] + "/pgx_module"
 
 def load_local(path):
     return f'{config["run_location"]}/{path}'
