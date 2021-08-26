@@ -2,6 +2,8 @@
 programdir:
     dir: "/path/to/pomfrey/"
 
+samplesheet: "path/to/samplesheet.csv"
+
 reference:
     ref:   "" #Path to fasta ref and .fai
     bwa:   "" #Path to bwa indexed ref

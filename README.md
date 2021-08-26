@@ -7,7 +7,7 @@ It is designed to be coupled to an existing pipeline and need to be given the lo
 ```{bash}
 git clone https://github.com/clinical-genomics-uppsala/pomfrey
 cd pomfrey 
-git checkout pomfey-pgx
+git checkout pomfey_pgx
 git clone https://github.com/joelaas/pgx_module
 cd pgx_module 
 git checkout pgx_pomfrey
