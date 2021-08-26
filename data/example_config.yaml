@@ -1,4 +1,4 @@
-## Pomfery params
+## For guide on pomfey parameters please check https://github.com/clinical-genomics-uppsala/pomfrey
 programdir:
     dir: "/path/to/pomfrey/"
 
@@ -65,7 +65,6 @@ methods:   # The (trust) order of vcfs into ensemble recall
 seqID:
     sequencerun: "test"
 
-## PGX param
 samples:
     my_sample: "my_sample_R1.fastq"
 
