@@ -150,6 +150,19 @@ class ArrangeHaplotype:
 
         return hap_df
 
+    def get_wildtypes(self, hap_df):
+        hap_genes = list(hap_df.gene.values)
+        for gene in set(self.clinical_guidelines.Gene):
+            if hap_df.empty or gene not in hap_genes:
+                gene_df = pd.DataFrame(
+                    {"gene": [gene], "Haplotype1": [gene + "-1"], "Haplotype2": [gene + "-1"],
+                     "HAPLOTYPE1": [gene + "-1"], "ACTIVITY_SCORE1": [1], "HAPLOTYPE2": [gene + "-1"],
+                     "ACTIVITY_SCORE2": [1], "Genotype_activity": [2.0]})
+                gene_df = gene_df.merge(self.clinical_guidelines, how="left",
+                                        left_on=["gene", "Genotype_activity"], right_on=["Gene", "Activity"])
+                hap_df = hap_df.append(gene_df, ignore_index=True)
+        return hap_df
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -179,6 +192,7 @@ def main():
     )
 
     df = ah.get_clinical_guidelines_table()
+    df = ah.get_wildtypes(df)
     columns = [
         "gene", "Haplotype1", "Haplotype2",
         "HAPLOTYPE1", "ACTIVITY_SCORE1", "HAPLOTYPE2",

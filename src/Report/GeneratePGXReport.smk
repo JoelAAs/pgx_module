@@ -28,7 +28,8 @@ rule GetClinicalGuidelines:
 rule Get_interaction_guidelines:
     """ Given Haplotype Combinations, get possible interactions betweens these """
     params:
-        interacting_targets = load_local(config["clinical_data"]["interacting_guidelines"])
+        interacting_targets = load_local(config["clinical_data"]["interacting_guidelines"]),
+        script_location= config["run_location"]
     input:
         diploids = "work/{seqID}/Results/Report/detected_variants/possible_diploids/{sample}_{seqID}.csv"
     output:
