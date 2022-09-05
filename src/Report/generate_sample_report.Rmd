@@ -116,10 +116,13 @@ if (length(warning_idx) != 0){
 
 # Kliniska rekomendationer baserade på interaktioner mellan genotyper
 ```{r}
+interaction_warning_idx <- which(interaction_guidelines[, "Haplotyp 1"] %in% faulty_haplotypes | clinical_guidelines_present[, "Haplotyp 2"] %in% faulty_haplotypes)
+
+
 interaction_guidelines %>%
     kable(format = "html", escape = F) %>%
     kable_styling() %>%
-    row_spec(warning_idx, bold=T, color ="white", background = "red")
+    row_spec(interaction_warning_idx, bold=T, color ="white", background = "red")
 ```
 
 # Kliniskt relevanta varianter upptäckta
