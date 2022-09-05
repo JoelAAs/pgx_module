@@ -30,7 +30,7 @@ haplotype_definitions <- read.csv(argsL$haplotype_definitions, sep = "\t", strin
 print("3")
 clinical_guidelines <- read.csv(argsL$clinical_guidelines, sep = "\t", stringsAsFactors = F,  row.names = NULL)
 print("4")
-interaction_guidelines <- read.csv(argsL$interactions_guidelines, sep = "\t", stringsAsFactors = F,  row.names = NULL)
+interaction_guidelines <- read.csv(argsL$interaction_guidelines, sep = "\t", stringsAsFactors = F,  row.names = NULL)
 # Functions
 risk_duplication <- function(x){
   min_dup_var <- min(abs(c(1/4, 1/3, 2/3, 3/4) - x))
