@@ -18,6 +18,10 @@ argsDF <- as.data.frame(do.call("rbind", parseArgs(args)))
 argsL <- as.list(as.character(argsDF$V2))
 names(argsL) <- argsDF$V1
 
+print(argsDF)
+```
+```{r rest, include=FALSE, echo=FALSE}
+
 detected_variants <- read.csv(argsL$found_variants, sep = "\t", stringsAsFactors = F, row.names = NULL)
 print("1")
 missed_variants <- read.csv(argsL$missed_variants, sep = "\t", stringsAsFactors = F,  row.names = NULL)
