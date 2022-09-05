@@ -126,7 +126,7 @@ if (length(warning_idx) != 0){
 ```{r}
 if (nrow(interaction_guidelines) != 0) {
   interaction_warning_idx <-
-          which(sapply(interaction_guidelines[,"haplotypes"], function(x) any(strsplit(x, ",") %in% faulty_haplotypes))
+          which(sapply(interaction_guidelines[,"haplotypes"], function(x) any(strsplit(x, ",") %in% faulty_haplotypes)))
 } else {
   interaction_warning_idx <- integer(0)
 }
