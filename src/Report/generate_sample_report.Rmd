@@ -18,18 +18,10 @@ argsDF <- as.data.frame(do.call("rbind", parseArgs(args)))
 argsL <- as.list(as.character(argsDF$V2))
 names(argsL) <- argsDF$V1
 
-print(argsDF)
-```
-```{r rest, include=FALSE, echo=FALSE}
-
 detected_variants <- read.csv(argsL$found_variants, sep = "\t", stringsAsFactors = F, row.names = NULL)
-print("1")
 missed_variants <- read.csv(argsL$missed_variants, sep = "\t", stringsAsFactors = F,  row.names = NULL)
-print("2")
 haplotype_definitions <- read.csv(argsL$haplotype_definitions, sep = "\t", stringsAsFactors = F,  row.names = NULL)
-print("3")
 clinical_guidelines <- read.csv(argsL$clinical_guidelines, sep = "\t", stringsAsFactors = F,  row.names = NULL)
-print("4")
 interaction_guidelines <- read.csv(argsL$interaction_guidelines, sep = "\t", stringsAsFactors = F,  row.names = NULL)
 # Functions
 risk_duplication <- function(x){
