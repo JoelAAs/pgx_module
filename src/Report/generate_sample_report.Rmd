@@ -124,7 +124,8 @@ if (length(warning_idx) != 0){
 
 # Kliniska rekomendationer baserade på interaktioner mellan genotyper
 ```{r}
-interaction_warning_idx <- which(interaction_guidelines[, "Haplotyp 1"] %in% faulty_haplotypes | clinical_guidelines_present[, "Haplotyp 2"] %in% faulty_haplotypes)
+interaction_warning_idx <-
+        sapply(interaction_guidelines[,"haplotypes"], function(x) any(strsplit(x, ",") %in% faulty_haplotypes))
 
 
 interaction_guidelines %>%

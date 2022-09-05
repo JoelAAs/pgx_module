@@ -27,6 +27,7 @@ class GetInteractions:
         )
 
         prev_idx = np.zeros(len(self.interaction_guidelines_df), dtype=bool)
+        haplotypes = [""] * len(self.interaction_guidelines_df)
         for i, j in index_combinations:
             if not i == j:
                 gene1 = self.variants_df.iloc[[i]].gene.values[0]
@@ -35,6 +36,13 @@ class GetInteractions:
                 activity1 = int(self.variants_df.iloc[[i]].Genotype_activity)
                 activity2 = int(self.variants_df.iloc[[j]].Genotype_activity)
 
+                all_haplotypes = ",".join([
+                    self.variants_df.iloc[[i]]["Haplotype1"],
+                    self.variants_df.iloc[[i]]["Haplotype2"],
+                    self.variants_df.iloc[[j]]["Haplotype1"],
+                    self.variants_df.iloc[[j]]["Haplotype2"]
+                ])
+
                 idx = (self.interaction_guidelines_df.gene1 == gene1) & \
                       (self.interaction_guidelines_df.gene2 == gene2) & \
                       (self.interaction_guidelines_df.activity_1 == activity1) & \
@@ -42,8 +50,14 @@ class GetInteractions:
 
                 if any(idx):
                     prev_idx += idx
+                    for idx_i in idx:
+                        if idx_i:
+                            haplotypes[idx_i] = all_haplotypes
 
-        return self.interaction_guidelines_df[prev_idx]
+        haplotypes = [h for h in haplotypes if h != ""]
+        interactions = self.interaction_guidelines_df[prev_idx]
+        interactions["haplotypes"] = haplotypes
+        return interactions
 
     def run_and_write(self, output):
         interactions = self.get_possible_interactions()
